@@ -16,6 +16,10 @@ koin = "3.5.6"
 navigationCompose = "2.8.5"
 coil = "2.7.0"
 paging = "3.3.5"
+sqlcipher-android = "4.13.0"
+sqlite-ktx = "2.6.2"
+security-crypto = "1.1.0"
+data-store = "1.1.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -42,6 +46,18 @@ koin-androidx-compose = { group = "io.insert-koin", name = "koin-androidx-compos
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 androidx-paging-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "paging" }
+sqlcipher-android = { group = "net.zetetic", name = "sqlcipher-android", version.ref = "sqlcipher-android" }
+androidx-sqlite-ktx = { group = "androidx.sqlite", name = "sqlite-ktx", version.ref = "sqlite-ktx" }
+androidx-security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "security-crypto" }
+androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "data-store" }
+
+
+[bundles]
+database-security = [
+    "sqlcipher-android",
+    "androidx-sqlite-ktx",
+    "androidx-security-crypto"
+]
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

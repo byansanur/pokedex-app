@@ -84,6 +84,11 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler) // Using KSP to process Room annotations
 
+    implementation(libs.androidx.datastore.preferences)
+
+    // Sql security
+    implementation(libs.bundles.database.security)
+
     // Images (Coil)
     implementation(libs.coil.compose)
 
