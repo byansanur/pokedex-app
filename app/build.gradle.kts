@@ -83,6 +83,7 @@ dependencies {
     // Database (Room)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.lifecycle.process)
     ksp(libs.androidx.room.compiler) // Using KSP to process Room annotations
 
     implementation(libs.room.paging)
@@ -96,6 +97,11 @@ dependencies {
 
     // Pagination (Paging 3)
     implementation(libs.androidx.paging.compose)
+
+    // Biometric
+    implementation(libs.androidx.biometric)
+
+    implementation(libs.androidx.compose.material.icons.extended)
 
     // --- Testing ---
     testImplementation(libs.junit)
