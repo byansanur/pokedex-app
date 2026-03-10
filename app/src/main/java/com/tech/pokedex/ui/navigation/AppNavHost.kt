@@ -7,9 +7,6 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.tech.pokedex.ui.viewmodel.AuthViewModel
-import com.tech.pokedex.ui.viewmodel.PokemonViewModel
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun AppNavHost(
@@ -23,9 +20,8 @@ fun AppNavHost(
         modifier = modifier
     ) {
         composable(Screen.Login.route) {
-            koinViewModel()
 
-            // TODO: Nanti kita ganti dengan LoginScreen yang sesungguhnya
+            // TODO: Nanti ganti dengan LoginScreen
             /*
             LoginScreen(
                 viewModel = authViewModel,
@@ -41,7 +37,6 @@ fun AppNavHost(
         }
 
         composable(Screen.Register.route) {
-            koinViewModel()
 
             /*
             RegisterScreen(
@@ -55,9 +50,6 @@ fun AppNavHost(
         }
 
         composable(Screen.Main.route) {
-            koinViewModel()
-            // AuthViewModel juga dibutuhkan di sini untuk tab Profile (Logout)
-            koinViewModel()
 
             /*
             MainScreen(
