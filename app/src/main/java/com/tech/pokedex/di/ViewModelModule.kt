@@ -1,7 +1,11 @@
 package com.tech.pokedex.di
 
+import com.tech.pokedex.ui.viewmodel.AuthViewModel
+import com.tech.pokedex.ui.viewmodel.PokemonViewModel
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val viewModelModule = module {
-//TODO: NEXT STEP
+    viewModel { AuthViewModel(get()) }
+    viewModel { PokemonViewModel(get())  }
 }
