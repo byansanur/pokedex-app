@@ -22,7 +22,7 @@ class SessionManager(private val context: Context) {
         val KEY_LOGIN_METHOD = stringPreferencesKey("login_method")
         val KEY_LAST_LOGGED_IN_USER_ID = stringPreferencesKey("last_logged_in_user_id")
         val KEY_LAST_ACTIVE_TIME = longPreferencesKey("last_active_time")
-        const val SESSION_TIMEOUT = 30 * 60 * 1000L
+        const val SESSION_TIMEOUT = 5 * 1000L
     }
 
     suspend fun saveSession(userId: String, loginMethod: String) {
