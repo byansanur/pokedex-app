@@ -1,7 +1,6 @@
 package com.tech.pokedex
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
@@ -38,7 +37,6 @@ class MainActivity : FragmentActivity() {
             override fun onStart(owner: LifecycleOwner) {
                 lifecycleScope.launch {
                     sessionManager.isSessionExpired.collect { expired ->
-                        Log.d("AUTH_TEST", "Is Session Expired: $expired")
                         if (expired) {
                             sessionManager.clearSession()
                         } else {
