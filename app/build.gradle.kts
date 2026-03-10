@@ -97,6 +97,11 @@ dependencies {
     // Pagination (Paging 3)
     implementation(libs.androidx.paging.compose)
 
+    // Biometric
+    implementation(libs.androidx.biometric)
+
+    implementation(libs.androidx.compose.material.icons.extended)
+
     // --- Testing ---
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
