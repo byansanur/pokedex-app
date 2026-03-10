@@ -7,6 +7,10 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.tech.pokedex.ui.auth.LoginScreen
+import com.tech.pokedex.ui.auth.RegisterScreen
+import com.tech.pokedex.ui.viewmodel.AuthViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun AppNavHost(
@@ -20,25 +24,20 @@ fun AppNavHost(
         modifier = modifier
     ) {
         composable(Screen.Login.route) {
-
-            // TODO: Nanti ganti dengan LoginScreen
-            /*
+            val authViewModel: AuthViewModel = koinViewModel()
             LoginScreen(
                 viewModel = authViewModel,
                 onNavigateToRegister = { navController.navigate(Screen.Register.route) },
                 onLoginSuccess = {
-                    // Jika login sukses, pergi ke Main dan hapus Login dari backstack
                     navController.navigate(Screen.Main.route) {
                         popUpTo(Screen.Login.route) { inclusive = true }
                     }
                 }
             )
-            */
         }
 
         composable(Screen.Register.route) {
-
-            /*
+            val authViewModel: AuthViewModel = koinViewModel()
             RegisterScreen(
                 viewModel = authViewModel,
                 onNavigateBack = { navController.popBackStack() },
@@ -46,7 +45,6 @@ fun AppNavHost(
                     navController.popBackStack() // Kembali ke Login setelah sukses
                 }
             )
-            */
         }
 
         composable(Screen.Main.route) {
