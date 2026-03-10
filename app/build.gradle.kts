@@ -84,6 +84,11 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler) // Using KSP to process Room annotations
 
+    implementation(libs.androidx.datastore.preferences)
+
+    // Sql security
+    implementation(libs.bundles.database.security)
+
     // Images (Coil)
     implementation(libs.coil.compose)
 
@@ -91,6 +96,9 @@ dependencies {
     implementation(libs.androidx.paging.compose)
 
     // --- Testing ---
+    testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
