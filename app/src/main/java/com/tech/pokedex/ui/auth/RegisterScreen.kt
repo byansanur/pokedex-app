@@ -184,7 +184,8 @@ fun RegisterScreen(
                         value = fullName,
                         onValueChange = { fullName = it },
                         label = "Ash Ketchum",
-                        leadingIcon = Icons.Filled.Person
+                        leadingIcon = Icons.Filled.Person,
+                        isNewUser = true
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -194,7 +195,8 @@ fun RegisterScreen(
                         value = password,
                         onValueChange = { password = it },
                         label = "••••••••",
-                        leadingIcon = Icons.Filled.Lock
+                        leadingIcon = Icons.Filled.Lock,
+                        isNewUser = true
                     )
 
                     Spacer(modifier = Modifier.height(32.dp))

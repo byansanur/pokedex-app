@@ -45,6 +45,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalAutofillManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -75,6 +76,8 @@ fun LoginScreen(
     var password by remember { mutableStateOf("") }
 
     val headerHeight = 320.dp
+
+    val autofillManager = LocalAutofillManager.current
 
     LaunchedEffect(authState) {
         when (val state = authState) {
@@ -151,7 +154,8 @@ fun LoginScreen(
                         value = trainerId,
                         onValueChange = { trainerId = it },
                         label = "AshKetchum_01",
-                        leadingIcon = Icons.Filled.Person
+                        leadingIcon = Icons.Filled.Person,
+                        isNewUser = false
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -161,7 +165,8 @@ fun LoginScreen(
                         value = password,
                         onValueChange = { password = it },
                         label = "••••••••",
-                        leadingIcon = Icons.Filled.Lock
+                        leadingIcon = Icons.Filled.Lock,
+                        isNewUser = false
                     )
 
                     Text(
@@ -188,6 +193,7 @@ fun LoginScreen(
                             modifier = Modifier.weight(1f),
                             onClick = {
                                 if (trainerId.isNotBlank() && password.isNotBlank()) {
+                                    autofillManager?.commit()
                                     viewModel.login(trainerId, password)
                                 } else {
                                     Toast.makeText(context, "Harap isi semua kolom", Toast.LENGTH_SHORT).show()

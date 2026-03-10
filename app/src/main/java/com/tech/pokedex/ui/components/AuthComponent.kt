@@ -26,8 +26,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.autofill.ContentType
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.semantics.contentType
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -45,7 +48,8 @@ fun PokedexTextField(
     label: String,
     leadingIcon: ImageVector? = null,
     modifier: Modifier = Modifier,
-    keyboardType: KeyboardType = KeyboardType.Text
+    keyboardType: KeyboardType = KeyboardType.Text,
+    isNewUser: Boolean = false,
 ) {
     TextField(
         value = value,
@@ -54,7 +58,8 @@ fun PokedexTextField(
         leadingIcon = leadingIcon?.let {
             { Icon(imageVector = it, contentDescription = null, tint = Color.Gray) }
         },
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth()
+            .semantics { contentType = if (isNewUser) ContentType.NewUsername else ContentType.Username },
         singleLine = true,
         shape = RoundedCornerShape(12.dp),
         colors = TextFieldDefaults.colors(
@@ -76,7 +81,8 @@ fun PasswordTextField(
     onValueChange: (String) -> Unit,
     label: String = "Password",
     leadingIcon: ImageVector? = null,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isNewUser: Boolean = false,
 ) {
     var isPasswordVisible by remember { mutableStateOf(false) }
 
@@ -87,7 +93,8 @@ fun PasswordTextField(
         leadingIcon = leadingIcon?.let {
             { Icon(imageVector = it, contentDescription = null, tint = Color.Gray) }
         },
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth()
+            .semantics { contentType = if (isNewUser) ContentType.NewPassword else ContentType.Password },
         singleLine = true,
         shape = RoundedCornerShape(12.dp),
         colors = TextFieldDefaults.colors(
