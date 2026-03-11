@@ -57,16 +57,12 @@ fun FavoritesScreen(
         Pair("snorlax", Color(0xFF4DB6AC))
     )
 
-    // Wadah Utama
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFF8F9FA))
             .padding(top = 16.dp)
     ) {
-        // ==========================================
-        // 1. FIXED TOP BAR (Tidak ikut ter-scroll)
-        // ==========================================
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -92,20 +88,12 @@ fun FavoritesScreen(
                     .fillMaxWidth()
                     .height(52.dp),
                 shape = RoundedCornerShape(50),
-//                colors = TextFieldDefaults.outlinedTextFieldColors(
-//                    focusedBorderColor = Color.Gray,
-//                    unfocusedBorderColor = Color.LightGray,
-//                    containerColor = Color.White
-//                ),
                 singleLine = true
             )
         }
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // ==========================================
-        // 2. SCROLLABLE AREA (Recent & Favorites Grid)
-        // ==========================================
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -113,8 +101,6 @@ fun FavoritesScreen(
             contentPadding = PaddingValues(start = 24.dp, end = 24.dp, bottom = 80.dp),
             modifier = Modifier.fillMaxSize()
         ) {
-            // -- Bagian Header List (Recent Searches) --
-            // Menggunakan maxLineSpan agar memakan 2 kolom penuh
             item(span = { GridItemSpan(maxLineSpan) }) {
                 Column {
                     Text(
@@ -148,14 +134,11 @@ fun FavoritesScreen(
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
                     )
-
-                    // Spacer kecil sebelum masuk ke item grid Pokemon
                     Spacer(modifier = Modifier.height(8.dp))
                 }
             }
 
-            // -- Bagian Grid (Otomatis terbagi 2 kolom) --
-            items(10) { index -> // Saya naikkan jadi 10 agar efek scroll-nya terlihat jelas
+            items(10) { index ->
                 FavoritePokemonCard(
                     index = index,
                     onClick = { onNavigateToDetail("pokemon_$index") }
@@ -164,10 +147,6 @@ fun FavoritesScreen(
         }
     }
 }
-
-// =========================================================
-// KOMPONEN KECIL
-// =========================================================
 
 @Composable
 fun RecentSearchChip(

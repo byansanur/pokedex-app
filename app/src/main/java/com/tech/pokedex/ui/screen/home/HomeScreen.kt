@@ -136,17 +136,11 @@ fun HomeScreen(
 
 }
 
-// =========================================================
-// KOMPONEN MODULAR
-// =========================================================
-
 @Composable
 fun PokemonCard(
-    pokemon: PokemonEntity, // <-- SEKARANG MENGGUNAKAN ENTITY ANDA
+    pokemon: PokemonEntity,
     onClick: () -> Unit
 ) {
-    // Asumsi: Jika entitas Anda memiliki field "types", gunakan itu.
-    // Di sini saya asumsikan entitas minimal punya id, name, dan imageUrl
     val imageUrl = "${BuildConfig.IMAGE_URL}${pokemon.id}.png"
     val context = LocalContext.current
     Card(
@@ -157,12 +151,11 @@ fun PokemonCard(
             .fillMaxWidth()
             .clickable { onClick() }
     ) {
-        // PERBAIKAN: Tambahkan fillMaxWidth() di Column ini
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp), // Padding internal diperbesar agar gambar/teks tidak menempel ke tepi kartu
-            horizontalAlignment = Alignment.CenterHorizontally // Meratakan konten ke tengah
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             AsyncImage(
                 model = ImageRequest.Builder(context)
@@ -176,7 +169,7 @@ fun PokemonCard(
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
                     .size(100.dp)
-                    .padding(bottom = 12.dp) // Beri jarak antara gambar dan teks
+                    .padding(bottom = 12.dp)
             )
 
             Text(
@@ -184,7 +177,7 @@ fun PokemonCard(
                 fontSize = 12.sp,
                 color = Color.Gray,
                 fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center // Rata tengah teks
+                textAlign = TextAlign.Center
             )
 
             Spacer(modifier = Modifier.height(4.dp))
@@ -194,7 +187,7 @@ fun PokemonCard(
                 fontSize = 16.sp,
                 fontWeight = FontWeight.ExtraBold,
                 color = PokeDarkBlue,
-                textAlign = TextAlign.Center // Rata tengah teks
+                textAlign = TextAlign.Center
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -219,7 +212,6 @@ fun HomeHeader() {
                     .background(PokeYellow),
                 contentAlignment = Alignment.Center
             ) {
-                // Anggap ini logo kotak hitam seperti di desain
                 Icon(Icons.Rounded.CatchingPokemon, contentDescription = "Logo", tint = PokeDarkBlue)
             }
             Spacer(modifier = Modifier.width(12.dp))
@@ -283,7 +275,6 @@ fun FeaturedPokemonCard(onCatchClick: () -> Unit) {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Bagian Kiri: Teks dan Tombol
             Column(
                 modifier = Modifier
                     .weight(1f)
@@ -317,15 +308,13 @@ fun FeaturedPokemonCard(onCatchClick: () -> Unit) {
                 }
             }
 
-            // Bagian Kanan: Gambar (Sementara pakai Box/Ikon placeholder)
             Box(
                 modifier = Modifier
                     .fillMaxHeight()
                     .width(150.dp)
-                    .background(PokeDarkBlue), // Di desain asli gambarnya memakan sisi kanan
+                    .background(PokeDarkBlue),
                 contentAlignment = Alignment.Center
             ) {
-                // Nanti kita ganti dengan AsyncImage (Coil)
                 Icon(Icons.Rounded.CatchingPokemon, contentDescription = null, modifier = Modifier.size(80.dp), tint = PokeYellow)
             }
         }

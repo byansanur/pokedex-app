@@ -76,7 +76,7 @@ fun MainScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(Color(0xFFF8F9FA)) // Background utama aplikasi (off-white)
+                .background(Color(0xFFF8F9FA))
         ) {
             when (selectedTab) {
                 0 -> HomeScreen(
@@ -93,24 +93,6 @@ fun MainScreen(
                 2 -> ProfileScreenPlaceholder(onLogout = onLogout)
             }
         }
-    }
-}
-
-// =========================================================
-// PLACEHOLDERS
-// =========================================================
-
-@Composable
-fun HomeScreenPlaceholder() {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text("Home Screen (Pokedex UI goes here)", fontWeight = FontWeight.Bold)
-    }
-}
-
-@Composable
-fun FavoritesScreenPlaceholder() {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text("Favorites Screen", fontWeight = FontWeight.Bold, color = Color.Gray)
     }
 }
 

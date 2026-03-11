@@ -15,7 +15,6 @@ import com.tech.pokedex.ui.auth.LoginScreen
 import com.tech.pokedex.ui.auth.RegisterScreen
 import com.tech.pokedex.ui.screen.MainScreen
 import com.tech.pokedex.ui.viewmodel.AuthViewModel
-import com.tech.pokedex.ui.viewmodel.PokemonViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -67,8 +66,6 @@ fun AppNavHost(
         }
 
         composable(Screen.Main.route) {
-            koinViewModel()
-            koinViewModel()
             MainScreen(
                 onNavigateToDetail = { pokemonName ->
                     navController.navigate(Screen.Detail.createRoute(pokemonName))
