@@ -29,6 +29,7 @@ jobs:
           cat <<EOF > local.properties
           baseUrl=${{ secrets.BASE_URL }}
           imageUrl=${{ secrets.IMAGE_URL }}
+          dbSecretKeySha256=${{ secrets.DB_SECRET_KEY }}
           EOF
 
       # 5. Memberikan akses eksekusi pada file gradlew
