@@ -43,14 +43,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.fragment.app.FragmentActivity
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.tech.pokedex.BuildConfig
 import com.tech.pokedex.ui.theme.PokeDarkBlue
 import com.tech.pokedex.ui.theme.PokeYellow
 import com.tech.pokedex.ui.viewmodel.AuthViewModel
+import com.tech.pokedex.util.BiometricUtil
 import com.tech.pokedex.util.Resource
 import org.koin.androidx.compose.koinViewModel
+import java.util.UUID
 
 @Composable
 fun ProfileScreen(
@@ -60,6 +63,9 @@ fun ProfileScreen(
 ) {
     val profileResource by authViewModel.currentUserProfile.collectAsState()
     val user = (profileResource as? Resource.Success)?.data
+
+    val context = LocalContext.current
+    val activity = context as FragmentActivity
 
     Column(
         modifier = Modifier
@@ -167,8 +173,24 @@ fun ProfileScreen(
                     Switch(
                         checked = user?.isUsingBiometric ?: false,
                         onCheckedChange = { isChecked ->
-                            user?.let {
-                                authViewModel.updateBiometric(it.userId, isChecked, it.biometricKey)
+                            if (isChecked) {
+                                BiometricUtil.showBiometricPrompt(activity) {
+                                    user?.let {
+                                        authViewModel.updateBiometric(
+                                            userId = it.userId,
+                                            isUsingBiometric = true,
+                                            biometricKey = UUID.randomUUID().toString()
+                                        )
+                                    }
+                                }
+                            } else {
+                                user?.let {
+                                    authViewModel.updateBiometric(
+                                        userId = it.userId,
+                                        isUsingBiometric = false,
+                                        biometricKey = ""
+                                    )
+                                }
                             }
                         },
                         colors = SwitchDefaults.colors(
