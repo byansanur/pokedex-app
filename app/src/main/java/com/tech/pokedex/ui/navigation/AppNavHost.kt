@@ -13,6 +13,7 @@ import androidx.navigation.navArgument
 import com.tech.pokedex.data.local.SessionManager
 import com.tech.pokedex.ui.auth.LoginScreen
 import com.tech.pokedex.ui.auth.RegisterScreen
+import com.tech.pokedex.ui.screen.MainScreen
 import com.tech.pokedex.ui.viewmodel.AuthViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -65,11 +66,7 @@ fun AppNavHost(
         }
 
         composable(Screen.Main.route) {
-
-            /*
             MainScreen(
-                pokemonViewModel = pokemonViewModel,
-                authViewModel = authViewModel,
                 onNavigateToDetail = { pokemonName ->
                     navController.navigate(Screen.Detail.createRoute(pokemonName))
                 },
@@ -80,7 +77,6 @@ fun AppNavHost(
                     }
                 }
             )
-            */
         }
 
         composable(

@@ -5,6 +5,6 @@ sealed class Screen(val route: String) {
     object Register: Screen("register")
     object Main: Screen("main")
     object Detail: Screen("detail/{pokemonName}") {
-        fun createRoute(pokemonName: String) = "detao/$pokemonName"
+        fun createRoute(pokemonName: String) = "detail/$pokemonName"
     }
 }
