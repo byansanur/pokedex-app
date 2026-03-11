@@ -17,7 +17,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -45,9 +45,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.tech.pokedex.BuildConfig
+import com.tech.pokedex.data.local.entity.FavoriteEntity
 import com.tech.pokedex.data.remote.model.PokemonDetailResponse
 import com.tech.pokedex.ui.theme.PokeDarkBlue
 import com.tech.pokedex.ui.theme.PokeYellow
+import com.tech.pokedex.ui.viewmodel.FavoriteViewModel
 import com.tech.pokedex.ui.viewmodel.PokemonViewModel
 import com.tech.pokedex.util.DetailUiState
 import org.koin.androidx.compose.koinViewModel
@@ -56,7 +58,8 @@ import org.koin.androidx.compose.koinViewModel
 fun DetailScreen(
     pokemonName: String,
     onNavigateBack: () -> Unit,
-    viewModel: PokemonViewModel = koinViewModel()
+    viewModel: PokemonViewModel = koinViewModel(),
+    favViewModel: FavoriteViewModel = koinViewModel()
 ) {
     val uiState by viewModel.detailUiState.collectAsState()
 
@@ -64,11 +67,40 @@ fun DetailScreen(
         viewModel.getPokemonDetail(pokemonName)
     }
 
+    // Default Top Bar saat loading atau error
+    var topBar: @Composable () -> Unit = {
+        DetailTopBar(
+            onNavigateBack = onNavigateBack,
+            isFavorite = false,
+            onFavoriteClick = {}
+        )
+    }
+
+    // Jika sukses, kita update Top Bar dengan state Favorite asli
+    if (uiState is DetailUiState.Success) {
+        val pokemon = (uiState as DetailUiState.Success).pokemon
+        val isFavorite by favViewModel.isFavorite(pokemon.id).collectAsState()
+
+        topBar = {
+            DetailTopBar(
+                onNavigateBack = onNavigateBack,
+                isFavorite = isFavorite,
+                onFavoriteClick = {
+                    val entity = FavoriteEntity(
+                        id = pokemon.id,
+                        name = pokemon.name,
+                        types = pokemon.types.joinToString(",") { it.type.name }
+                    )
+                    favViewModel.toggleFavorite(entity, isFavorite)
+                }
+            )
+        }
+    }
+
     Scaffold(
-        topBar = { DetailTopBar(onNavigateBack = onNavigateBack, isFavorite = false) },
+        topBar = topBar,
         containerColor = Color(0xFFF8F9FA)
     ) { innerPadding ->
-
         Box(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
             when (uiState) {
                 is DetailUiState.Loading -> {
@@ -115,15 +147,30 @@ fun DetailScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DetailTopBar(onNavigateBack: () -> Unit, isFavorite: Boolean) {
+fun DetailTopBar(
+    onNavigateBack: () -> Unit,
+    isFavorite: Boolean,
+    onFavoriteClick: () -> Unit
+) {
     CenterAlignedTopAppBar(
         title = { Text("Pokemon Detail", fontWeight = FontWeight.Bold, fontSize = 18.sp, color = PokeDarkBlue) },
-        navigationIcon = { IconButton(onClick = onNavigateBack) { Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = PokeDarkBlue) } },
-        actions = { IconButton(onClick = {}) { Icon(if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder, contentDescription = "Favorite", tint = PokeDarkBlue) } },
+        navigationIcon = {
+            IconButton(onClick = onNavigateBack) {
+                Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = "Back", tint = PokeDarkBlue)
+            }
+        },
+        actions = {
+            IconButton(onClick = onFavoriteClick) {
+                Icon(
+                    imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                    contentDescription = "Favorite",
+                    tint = if (isFavorite) Color.Red else PokeDarkBlue
+                )
+            }
+        },
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent)
     )
 }
-
 
 @Composable
 fun PokemonImageHeader(pokemon: PokemonDetailResponse) {
@@ -167,9 +214,7 @@ fun PokemonInfoHeader(pokemon: PokemonDetailResponse) {
             fontSize = 32.sp, fontWeight = FontWeight.ExtraBold, color = PokeDarkBlue
         )
         Spacer(modifier = Modifier.height(4.dp))
-
         Text("Pokemon", fontSize = 16.sp, color = Color.Gray, fontWeight = FontWeight.Medium)
-
         Spacer(modifier = Modifier.height(16.dp))
 
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -265,7 +310,6 @@ fun BaseStatsSection(pokemon: PokemonDetailResponse) {
         Spacer(modifier = Modifier.height(16.dp))
 
         pokemon.stats.forEach { statSlot ->
-            // Mengubah format nama stat (contoh: "special-attack" -> "SP ATK")
             val formattedName = when (statSlot.stat.name) {
                 "hp" -> "HP"
                 "attack" -> "ATK"
@@ -275,7 +319,7 @@ fun BaseStatsSection(pokemon: PokemonDetailResponse) {
                 "speed" -> "SPD"
                 else -> statSlot.stat.name.uppercase()
             }
-            StatRow(statName = formattedName, statValue = statSlot.baseStat, maxValue = 100) // Nilai max relatif
+            StatRow(statName = formattedName, statValue = statSlot.baseStat, maxValue = 100)
         }
     }
 }
@@ -285,7 +329,7 @@ fun StatRow(statName: String, statValue: Int, maxValue: Int) {
     Row(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
         Text(text = statName, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color.Gray, modifier = Modifier.width(50.dp))
         LinearProgressIndicator(
-            progress = { (statValue.toFloat() / 255f).coerceIn(0f, 1f) }, // Max stat di Pokemon adalah 255
+            progress = { (statValue.toFloat() / 255f).coerceIn(0f, 1f) },
             modifier = Modifier.weight(1f).height(8.dp).clip(RoundedCornerShape(50)),
             color = PokeYellow, trackColor = Color(0xFFEEEEEE), strokeCap = StrokeCap.Round
         )

@@ -21,6 +21,9 @@ interface PokemonDao {
     @Query("SELECT COUNT(id) FROM pokemon_list")
     suspend fun getPokemonCount(): Int
 
+    @Query("SELECT * FROM pokemon_list WHERE name LIKE '%' || :searchQuery || '%'")
+    suspend fun searchPokemonLocal(searchQuery: String): List<PokemonEntity>
+
     @Query("DELETE FROM pokemon_list")
     suspend fun clearAll()
 }
