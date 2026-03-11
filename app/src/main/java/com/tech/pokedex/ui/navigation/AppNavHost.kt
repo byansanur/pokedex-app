@@ -14,7 +14,9 @@ import com.tech.pokedex.data.local.SessionManager
 import com.tech.pokedex.ui.auth.LoginScreen
 import com.tech.pokedex.ui.auth.RegisterScreen
 import com.tech.pokedex.ui.screen.MainScreen
+import com.tech.pokedex.ui.screen.detail.DetailScreen
 import com.tech.pokedex.ui.viewmodel.AuthViewModel
+import com.tech.pokedex.ui.viewmodel.PokemonViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -83,16 +85,13 @@ fun AppNavHost(
             route = Screen.Detail.route,
             arguments = listOf(navArgument("pokemonName") { type = NavType.StringType })
         ) { backStackEntry ->
-            //val pokemonName = backStackEntry.arguments?.getString("pokemonName") ?: ""
-            // val detailViewModel: DetailViewModel = koinViewModel() // Dibuat nanti
-
-            /*
+            val pokemonName = backStackEntry.arguments?.getString("pokemonName") ?: ""
+            val detailViewModel: PokemonViewModel = koinViewModel() // Dibuat nanti
             DetailScreen(
                 pokemonName = pokemonName,
-                viewModel = detailViewModel,
-                onNavigateBack = { navController.popBackStack() }
+                onNavigateBack = { navController.popBackStack() },
+                viewModel = detailViewModel
             )
-            */
         }
     }
 }

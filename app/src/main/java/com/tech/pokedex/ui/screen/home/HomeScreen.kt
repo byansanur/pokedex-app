@@ -1,6 +1,5 @@
 package com.tech.pokedex.ui.screen.home
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,11 +15,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Notifications
@@ -32,13 +29,8 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -74,7 +66,6 @@ fun HomeScreen(
         modifier = Modifier.fillMaxSize()
     ) {
         HomeHeader()
-        HomeFilterChips()
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -225,38 +216,6 @@ fun HomeHeader() {
                 .size(40.dp)
         ) {
             Icon(Icons.Filled.Notifications, contentDescription = "Notifications", tint = PokeDarkBlue)
-        }
-    }
-}
-
-@Composable
-fun HomeFilterChips() {
-    val filters = listOf("All", "Fire", "Water", "Grass", "Electric", "Bug")
-    var selectedFilter by remember { mutableStateOf("All") }
-
-    LazyRow(
-        contentPadding = PaddingValues(horizontal = 24.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        items(filters) { filter ->
-            val isSelected = filter == selectedFilter
-            Surface(
-                onClick = { selectedFilter = filter },
-                shape = RoundedCornerShape(24.dp),
-                color = if (isSelected) PokeYellow else Color.White,
-                border = if (!isSelected) BorderStroke(1.dp, Color.LightGray) else null,
-                modifier = Modifier.height(36.dp)
-            ) {
-                Box(contentAlignment = Alignment.Center, modifier = Modifier.padding(horizontal = 16.dp)) {
-                    Text(
-                        text = filter,
-                        color = if (isSelected) PokeDarkBlue else Color.Gray,
-                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                        fontSize = 14.sp
-                    )
-                }
-            }
         }
     }
 }
