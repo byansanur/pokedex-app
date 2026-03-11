@@ -24,9 +24,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -55,9 +55,11 @@ import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.tech.pokedex.BuildConfig
+import com.tech.pokedex.data.local.entity.FavoriteEntity
 import com.tech.pokedex.data.local.entity.PokemonEntity
 import com.tech.pokedex.ui.theme.PokeDarkBlue
 import com.tech.pokedex.ui.theme.chipColors
+import com.tech.pokedex.ui.viewmodel.FavoriteViewModel
 import com.tech.pokedex.ui.viewmodel.SearchViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -66,11 +68,14 @@ import org.koin.androidx.compose.koinViewModel
 fun FavoritesScreen(
     onNavigateBack: () -> Unit,
     onNavigateToDetail: (String) -> Unit,
-    viewModel: SearchViewModel = koinViewModel()
+    viewModel: SearchViewModel = koinViewModel(),
+    favViewModel: FavoriteViewModel = koinViewModel()
 ) {
     val searchQuery by viewModel.searchQuery.collectAsState()
     val searchResults by viewModel.searchResults.collectAsState()
     val recentSearches by viewModel.recentSearches.collectAsState()
+
+    val favoriteList by favViewModel.favorites.collectAsState()
 
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -87,11 +92,15 @@ fun FavoritesScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                imageVector = Icons.Filled.KeyboardArrowLeft,
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                 contentDescription = "Back",
                 modifier = Modifier
                     .size(32.dp)
-                    .clickable { onNavigateBack() },
+                    .clickable { if (searchQuery.isNotEmpty()) {
+                        viewModel.onSearchQueryChange("")
+                    } else {
+                        onNavigateBack() // Ini akan lari ke { selectedTab = 0 } di MainScreen
+                    } },
                 tint = PokeDarkBlue
             )
 
@@ -200,8 +209,7 @@ fun FavoritesScreen(
                     }
                 }
 
-                val isFavoriteEmpty = true
-                if (isFavoriteEmpty) {
+                if (favoriteList.isEmpty()) {
                     item(span = { GridItemSpan(maxLineSpan) }) {
                         Box(
                             modifier = Modifier
@@ -210,7 +218,6 @@ fun FavoritesScreen(
                             contentAlignment = Alignment.Center
                         ) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                // Anda bisa menambahkan Icon di sini jika mau
                                 Icon(
                                     imageVector = Icons.Filled.Favorite,
                                     contentDescription = "Favorite",
@@ -231,15 +238,13 @@ fun FavoritesScreen(
                     }
                 } else {
                     // favorite pokemon card
+                    items(favoriteList, key = { it.id }) { pokemon ->
+                        FavoritePokemonCard(
+                            pokemon = pokemon,
+                            onClick = { onNavigateToDetail(pokemon.name) }
+                        )
+                    }
                 }
-
-//                items(10) { index ->
-//                    FavoritePokemonCardPlaceholder(
-//                        index = index,
-//                        onClick = { onNavigateToDetail("pokemon_$index") }
-//                    )
-//                }
-
             }
             else {
                 if (searchResults.isEmpty()) {
@@ -328,23 +333,40 @@ fun SearchPokemonCard(pokemon: PokemonEntity, onClick: () -> Unit) {
 }
 
 @Composable
-fun FavoritePokemonCardPlaceholder(index: Int, onClick: () -> Unit) {
-    Box(
+fun FavoritePokemonCard(pokemon: FavoriteEntity, onClick: () -> Unit) {
+    // Merakit URL gambar menggunakan ID dari FavoriteEntity
+    val imageUrl = "${BuildConfig.IMAGE_URL}${pokemon.id}.png"
+
+    Card(
+        shape = RoundedCornerShape(16.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .background(PokeDarkBlue.copy(alpha = 0.8f))
-            .clickable { onClick() }
+            .height(220.dp)
+            .clickable { onClick() },
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(2.dp)
     ) {
-        Box(modifier = Modifier.fillMaxSize().background(Color.LightGray.copy(alpha = 0.3f)), contentAlignment = Alignment.Center) {
-            Text("Image $index", color = Color.White)
-        }
-        Box(
-            modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth().background(Color.Black.copy(alpha = 0.4f)).padding(8.dp),
-            contentAlignment = Alignment.Center
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(16.dp)
         ) {
-            Text("Pokemon $index", color = Color.White, fontWeight = FontWeight.Bold)
+            AsyncImage(
+                model = imageUrl,
+                contentDescription = pokemon.name,
+                modifier = Modifier.weight(1f).fillMaxWidth(),
+                contentScale = ContentScale.Fit
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = pokemon.name.uppercase(),
+                fontWeight = FontWeight.ExtraBold,
+                color = PokeDarkBlue
+            )
+            Text(
+                text = pokemon.types.replace(",", " | ").uppercase(),
+                fontSize = 10.sp,
+                color = Color.Gray
+            )
         }
     }
 }
