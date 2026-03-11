@@ -5,9 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.tech.pokedex.data.local.entity.UserEntity
 import com.tech.pokedex.data.repository.UserRepository
 import com.tech.pokedex.util.Resource
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -60,4 +64,19 @@ class AuthViewModel(
             userRepository.updateBiometricSetup(userId, isUsingBiometric, biometricKey)
         }
     }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val currentUserProfile = userRepository.activeUserId.flatMapLatest { userId ->
+        if (userId != null) {
+            flow {
+                emit(userRepository.getUserProfile(userId))
+            }
+        } else {
+            flowOf<Resource<UserEntity>?>(null)
+        }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = null
+    )
 }
