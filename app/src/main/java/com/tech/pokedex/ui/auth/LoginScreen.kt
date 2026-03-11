@@ -70,6 +70,7 @@ fun LoginScreen(
 ) {
     val context = LocalContext.current
     val authState by viewModel.authState.collectAsState()
+    val isBiometricEnabled by viewModel.isBiometricEnabledForLastUser.collectAsState()
     val lastLoggedInUserId by viewModel.lastLoggedInUserId.collectAsState()
 
     var trainerId by remember { mutableStateOf("") }
@@ -201,7 +202,7 @@ fun LoginScreen(
                             }
                         )
 
-                        if (lastLoggedInUserId != null) {
+                        if (isBiometricEnabled && lastLoggedInUserId != null) {
                             OutlinedButton(
                                 onClick = {
                                     BiometricUtil.showBiometricPrompt(context as FragmentActivity) {

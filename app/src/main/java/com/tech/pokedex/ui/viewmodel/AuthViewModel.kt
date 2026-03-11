@@ -79,4 +79,24 @@ class AuthViewModel(
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = null
     )
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val isBiometricEnabledForLastUser = lastLoggedInUserId.flatMapLatest { userId ->
+        flow {
+            if (userId != null) {
+                val userResource = userRepository.getUserProfile(userId)
+                if (userResource is Resource.Success) {
+                    emit(userResource.data.isUsingBiometric)
+                } else {
+                    emit(false)
+                }
+            } else {
+                emit(false)
+            }
+        }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = false
+    )
 }
