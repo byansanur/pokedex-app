@@ -11,6 +11,8 @@ data class PokemonDetailResponse(
     val weight: Int,
     @SerializedName("height")
     val height: Int,
+    @SerializedName("base_experience")
+    val baseExperience: Int,
     @SerializedName("abilities")
     val abilities: List<AbilitySlot>,
     @SerializedName("stats")
