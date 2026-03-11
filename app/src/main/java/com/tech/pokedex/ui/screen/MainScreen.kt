@@ -80,14 +80,14 @@ fun MainScreen(
         ) {
             when (selectedTab) {
                 0 -> HomeScreen(
-                    onNavigateToDetail = {
-                        onNavigateToDetail("pikachu")
+                    onNavigateToDetail = { pokemonName ->
+                        onNavigateToDetail(pokemonName)
                     }
                 )
                 1 -> FavoritesScreen(
                     onNavigateBack = { selectedTab = 0 }, // Kembali ke Home
-                    onNavigateToDetail = {
-                        onNavigateToDetail("pikachu")
+                    onNavigateToDetail = { pokemonName ->
+                        onNavigateToDetail(pokemonName)
                     }
                 )
                 2 -> ProfileScreenPlaceholder(onLogout = onLogout)
