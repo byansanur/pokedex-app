@@ -23,6 +23,7 @@ val databaseModule = module {
     single { provideDatabase(androidContext()) }
     single { get<AppDatabase>().userDao() }
     single { get<AppDatabase>().pokemonDao() }
+    single { get<AppDatabase>().searchHistoryDao() }
 
     single { SessionManager(context = androidContext()) }
 
