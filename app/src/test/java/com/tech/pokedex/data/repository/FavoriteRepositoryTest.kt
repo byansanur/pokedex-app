@@ -17,6 +17,7 @@ class FavoriteRepositoryTest {
     private lateinit var repository: FavoriteRepository
     private lateinit var database: AppDatabase
     private lateinit var favoriteDao: FavoriteDao
+    private val userId = "user123"
 
     @Before
     fun setUp() {
@@ -27,36 +28,36 @@ class FavoriteRepositoryTest {
     }
 
     @Test
-    fun `getFavorites returns flow from dao`() = runTest {
+    fun `getFavorites returns flow from dao for specific user`() = runTest {
         val dummyFavorites = listOf(mockk<FavoriteEntity>())
-        every { favoriteDao.getAllFavorites() } returns flowOf(dummyFavorites)
+        every { favoriteDao.getAllFavorites(userId) } returns flowOf(dummyFavorites)
 
-        repository.getFavorites().collect { result ->
+        repository.getFavorites(userId).collect { result ->
             assertEquals(dummyFavorites, result)
         }
     }
 
     @Test
-    fun `isFavorite returns flow from dao`() = runTest {
+    fun `isFavorite returns flow from dao for specific user`() = runTest {
         val id = 1
-        every { favoriteDao.isFavorite(id) } returns flowOf(true)
+        every { favoriteDao.isFavorite(id, userId) } returns flowOf(true)
 
-        repository.isFavorite(id).collect { result ->
+        repository.isFavorite(id, userId).collect { result ->
             assertEquals(true, result)
         }
     }
 
     @Test
     fun `toggleFavorite adds to favorite when not already favorite`() = runTest {
-        val dummyFavorite = FavoriteEntity(id = 1, name = "Pikachu", types = "electric")
+        val dummyFavorite = FavoriteEntity(id = 1, userId = userId, name = "Pikachu", types = "electric")
         repository.toggleFavorite(dummyFavorite, isAlreadyFavorite = false)
         coVerify { favoriteDao.addFavorite(dummyFavorite) }
     }
 
     @Test
     fun `toggleFavorite removes from favorite when already favorite`() = runTest {
-        val dummyFavorite = FavoriteEntity(id = 1, name = "Pikachu", types = "electric")
+        val dummyFavorite = FavoriteEntity(id = 1, userId = userId, name = "Pikachu", types = "electric")
         repository.toggleFavorite(dummyFavorite, isAlreadyFavorite = true)
-        coVerify { favoriteDao.removeFavorite(dummyFavorite.id) }
+        coVerify { favoriteDao.removeFavorite(dummyFavorite.id, dummyFavorite.userId) }
     }
 }

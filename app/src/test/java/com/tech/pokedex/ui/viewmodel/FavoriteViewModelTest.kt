@@ -1,5 +1,6 @@
 package com.tech.pokedex.ui.viewmodel
 
+import com.tech.pokedex.data.local.SessionManager
 import com.tech.pokedex.data.local.entity.FavoriteEntity
 import com.tech.pokedex.data.repository.FavoriteRepository
 import com.tech.pokedex.util.MainDispatcherRule
@@ -28,12 +29,18 @@ class FavoriteViewModelTest {
 
     private lateinit var viewModel: FavoriteViewModel
     private lateinit var repository: FavoriteRepository
+    private lateinit var sessionManager: SessionManager
+    private val userId = "user123"
 
     @Before
     fun setUp() {
         repository = mockk(relaxed = true)
-        every { repository.getFavorites() } returns flowOf(emptyList())
-        viewModel = FavoriteViewModel(repository)
+        sessionManager = mockk(relaxed = true)
+        
+        every { sessionManager.activeUserId } returns flowOf(userId)
+        every { repository.getFavorites(userId) } returns flowOf(emptyList())
+        
+        viewModel = FavoriteViewModel(repository, sessionManager)
     }
 
     @After
@@ -42,14 +49,12 @@ class FavoriteViewModelTest {
     }
 
     @Test
-    fun `favorites state initialized from repository`() = runTest {
+    fun `favorites state initialized from repository for active user`() = runTest {
         val dummyFavorites = listOf(mockk<FavoriteEntity>(relaxed = true))
-        every { repository.getFavorites() } returns flowOf(dummyFavorites)
+        every { repository.getFavorites(userId) } returns flowOf(dummyFavorites)
         
-        // Need to recreate ViewModel because favorites is a stateIn initialized at init
-        val newViewModel = FavoriteViewModel(repository)
+        val newViewModel = FavoriteViewModel(repository, sessionManager)
         
-        // Start collecting to trigger WhileSubscribed
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
             newViewModel.favorites.collect()
         }
@@ -58,13 +63,12 @@ class FavoriteViewModelTest {
     }
 
     @Test
-    fun `isFavorite returns correct flow from repository`() = runTest {
+    fun `isFavorite returns correct flow from repository for active user`() = runTest {
         val pokemonId = 1
-        every { repository.isFavorite(pokemonId) } returns flowOf(true)
+        every { repository.isFavorite(pokemonId, userId) } returns flowOf(true)
         
         val stateFlow = viewModel.isFavorite(pokemonId)
         
-        // Start collecting to trigger WhileSubscribed
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
             stateFlow.collect()
         }
@@ -73,12 +77,21 @@ class FavoriteViewModelTest {
     }
 
     @Test
-    fun `toggleFavorite calls repository toggleFavorite`() = runTest {
-        val dummyFavorite = mockk<FavoriteEntity>(relaxed = true)
+    fun `toggleFavorite calls repository toggleFavorite with active userId`() = runTest {
+        val pokemonId = 1
+        val name = "Pikachu"
+        val types = "Electric"
         val isAlreadyFavorite = false
         
-        viewModel.toggleFavorite(dummyFavorite, isAlreadyFavorite)
+        every { sessionManager.activeUserId } returns flowOf(userId)
+
+        viewModel.toggleFavorite(pokemonId, name, types, isAlreadyFavorite)
         
-        coVerify { repository.toggleFavorite(dummyFavorite, isAlreadyFavorite) }
+        coVerify { 
+            repository.toggleFavorite(
+                match { it.id == pokemonId && it.userId == userId && it.name == name },
+                isAlreadyFavorite 
+            ) 
+        }
     }
 }
