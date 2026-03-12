@@ -19,10 +19,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Fingerprint
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.rounded.Verified
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -81,7 +81,7 @@ fun ProfileScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                imageVector = Icons.Filled.KeyboardArrowLeft,
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                 contentDescription = "Back",
                 modifier = Modifier
                     .size(32.dp)
@@ -208,7 +208,7 @@ fun ProfileScreen(
             )
 
             ProfileActionItem(
-                icon = Icons.Default.Logout,
+                icon = Icons.AutoMirrored.Filled.Logout,
                 title = "Logout",
                 iconColor = Color.Red,
                 textColor = Color.Red,
@@ -265,7 +265,7 @@ fun ProfileActionItem(
             trailing()
         } else {
             Icon(
-                imageVector = Icons.Default.KeyboardArrowRight,
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                 contentDescription = null,
                 tint = Color.LightGray,
                 modifier = Modifier.size(28.dp)

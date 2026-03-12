@@ -19,3 +19,30 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-keep class com.tech.pokedex.data.remote.model.** { *; }
+-keepclassmembers class com.tech.pokedex.data.remote.model.** { *; }
+
+-keepattributes Annotation, Signature
+-keepclassmembers class * {
+    @com.google.gson.annotations.SerializedName <fields>;
+}
+
+-keep class com.tech.pokedex.data.remote.api.** { *; }
+
+-dontwarn retrofit2.**
+-keep class retrofit2.** { *; }
+
+-keep class com.tech.pokedex.data.local.entity.** { *; }
+-keepclassmembers class com.tech.pokedex.data.local.entity.** { *; }
+
+-keep class com.tech.pokedex.data.local.dao.** { *; }
+-keep class * extends androidx.room.RoomDatabase { *; }
+
+-keep class org.koin.** { *; }
+
+-keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
+-keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
+-keepclassmembernames class kotlinx.** {
+    volatile <fields>;
+}

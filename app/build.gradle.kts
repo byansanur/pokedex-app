@@ -28,9 +28,9 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "BASE_URL", getLocalProperty("baseUrl"))
-        buildConfigField("String", "IMAGE_URL", getLocalProperty("imageUrl"))
-        buildConfigField("String", "DB_SECRET", getLocalProperty("dbSecretKeySha256"))
+        buildConfigField("String", "BASE_URL", "\"${getLocalProperty("baseUrl")}\"")
+        buildConfigField("String", "IMAGE_URL", "\"${getLocalProperty("imageUrl")}\"")
+        buildConfigField("String", "DB_SECRET", "\"${getLocalProperty("dbSecretKeySha256")}\"")
     }
 
     flavorDimensions += "environment"
