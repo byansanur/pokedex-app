@@ -11,5 +11,5 @@ val viewModelModule = module {
     viewModel { AuthViewModel(get()) }
     viewModel { PokemonViewModel(get())  }
     viewModel { SearchViewModel(get()) }
-    viewModel { FavoriteViewModel(get()) }
+    viewModel { FavoriteViewModel(get(), get()) }
 }

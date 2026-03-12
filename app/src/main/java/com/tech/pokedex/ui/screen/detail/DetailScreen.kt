@@ -45,7 +45,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.tech.pokedex.BuildConfig
-import com.tech.pokedex.data.local.entity.FavoriteEntity
 import com.tech.pokedex.data.remote.model.PokemonDetailResponse
 import com.tech.pokedex.ui.theme.PokeDarkBlue
 import com.tech.pokedex.ui.theme.PokeYellow
@@ -76,7 +75,6 @@ fun DetailScreen(
         )
     }
 
-    // Jika sukses, kita update Top Bar dengan state Favorite asli
     if (uiState is DetailUiState.Success) {
         val pokemon = (uiState as DetailUiState.Success).pokemon
         val isFavorite by favViewModel.isFavorite(pokemon.id).collectAsState()
@@ -86,12 +84,13 @@ fun DetailScreen(
                 onNavigateBack = onNavigateBack,
                 isFavorite = isFavorite,
                 onFavoriteClick = {
-                    val entity = FavoriteEntity(
-                        id = pokemon.id,
+                    val typesString = pokemon.types.joinToString(",") { it.type.name }
+                    favViewModel.toggleFavorite(
+                        pokemonId = pokemon.id,
                         name = pokemon.name,
-                        types = pokemon.types.joinToString(",") { it.type.name }
+                        types = typesString,
+                        isAlreadyFavorite = isFavorite
                     )
-                    favViewModel.toggleFavorite(entity, isFavorite)
                 }
             )
         }
