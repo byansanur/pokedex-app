@@ -1,5 +1,6 @@
 package com.tech.pokedex.ui.auth
 
+import android.content.ClipData
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -27,7 +28,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.CatchingPokemon
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.ContentCopy
@@ -46,15 +47,16 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.platform.toClipEntry
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
@@ -68,6 +70,7 @@ import com.tech.pokedex.ui.theme.PokeDarkBlue
 import com.tech.pokedex.ui.theme.PokeYellow
 import com.tech.pokedex.ui.viewmodel.AuthViewModel
 import com.tech.pokedex.util.Resource
+import kotlinx.coroutines.launch
 
 @Composable
 fun RegisterScreen(
@@ -133,7 +136,7 @@ fun RegisterScreen(
                 contentAlignment = Alignment.CenterStart
             ) {
                 IconButton(onClick = onNavigateBack) {
-                    Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = PokeDarkBlue)
+                    Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = "Back", tint = PokeDarkBlue)
                 }
             }
 
@@ -245,7 +248,8 @@ fun SuccessRegisterDialog(
     trainerId: String,
     onContinueClick: () -> Unit
 ) {
-    val clipboardManager = LocalClipboardManager.current
+    val clipboardManager = LocalClipboard.current
+    val scope = rememberCoroutineScope()
 
     Dialog(onDismissRequest = { /* Jangan ditutup dengan klik luar */ }) {
         Box(
@@ -286,7 +290,12 @@ fun SuccessRegisterDialog(
                             ) {
                                 Text(trainerId, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold, color = PokeDarkBlue)
                                 IconButton(
-                                    onClick = { clipboardManager.setText(AnnotatedString(trainerId)) },
+                                    onClick = {
+                                        scope.launch {
+                                            val clipData = ClipData.newPlainText(trainerId, trainerId)
+                                            clipboardManager.setClipEntry(clipData.toClipEntry())
+                                        }
+                                    },
                                     modifier = Modifier
                                         .size(36.dp)
                                         .background(PokeYellow, RoundedCornerShape(8.dp))
