@@ -94,4 +94,17 @@ class FavoriteViewModelTest {
             ) 
         }
     }
+
+    @Test
+    fun `favorites state is empty when no user is logged in`() = runTest {
+        every { sessionManager.activeUserId } returns flowOf(null)
+
+        val newViewModel = FavoriteViewModel(repository, sessionManager)
+
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+            newViewModel.favorites.collect()
+        }
+
+        assertTrue(newViewModel.favorites.value.isEmpty())
+    }
 }

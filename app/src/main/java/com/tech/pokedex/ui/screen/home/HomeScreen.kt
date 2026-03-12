@@ -1,5 +1,6 @@
 package com.tech.pokedex.ui.screen.home
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -74,7 +75,9 @@ fun HomeScreen(
             contentPadding = PaddingValues(start = 24.dp, end = 24.dp, bottom = 80.dp),// Beri jarak bawah untuk Bottom Nav
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier.fillMaxWidth().weight(1f)
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
         ) {
             item(span = { GridItemSpan(maxLineSpan) }) {
                 FeaturedPokemonCard(onCatchClick = { onNavigateToDetail("pikachu") })
@@ -98,7 +101,9 @@ fun HomeScreen(
                 when {
                     loadState.append is LoadState.Loading -> {
                         item(span = { GridItemSpan(maxLineSpan) }) {
-                            Box(modifier = Modifier.fillMaxWidth().padding(16.dp), contentAlignment = Alignment.Center) {
+                            Box(modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp), contentAlignment = Alignment.Center) {
                                 CircularProgressIndicator(color = PokeDarkBlue)
                             }
                         }
@@ -108,14 +113,18 @@ fun HomeScreen(
                             Text(
                                 text = "Gagal memuat data",
                                 color = Color.Red,
-                                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
                                 textAlign = TextAlign.Center
                             )
                         }
                     }
                     loadState.refresh is LoadState.Loading -> {
                         item(span = { GridItemSpan(maxLineSpan) }) {
-                            Box(modifier = Modifier.fillMaxWidth().height(200.dp), contentAlignment = Alignment.Center) {
+                            Box(modifier = Modifier
+                                .fillMaxWidth()
+                                .height(200.dp), contentAlignment = Alignment.Center) {
                                 CircularProgressIndicator(color = PokeDarkBlue)
                             }
                         }
@@ -188,6 +197,7 @@ fun PokemonCard(
 
 @Composable
 fun HomeHeader() {
+    val contextHeader = LocalContext.current
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -210,7 +220,7 @@ fun HomeHeader() {
         }
 
         IconButton(
-            onClick = { /* TODO: Notifikasi */ },
+            onClick = { Toast.makeText(contextHeader, "Coming Soon!", Toast.LENGTH_SHORT).show() },
             modifier = Modifier
                 .background(Color.White, shape = RoundedCornerShape(12.dp))
                 .size(40.dp)
