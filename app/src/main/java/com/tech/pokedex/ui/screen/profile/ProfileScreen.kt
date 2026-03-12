@@ -33,6 +33,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -53,7 +56,6 @@ import com.tech.pokedex.ui.viewmodel.AuthViewModel
 import com.tech.pokedex.util.BiometricUtil
 import com.tech.pokedex.util.Resource
 import org.koin.androidx.compose.koinViewModel
-import java.util.UUID
 
 @Composable
 fun ProfileScreen(
@@ -66,6 +68,10 @@ fun ProfileScreen(
 
     val context = LocalContext.current
     val activity = context as FragmentActivity
+
+    var isBiometricEnabled by remember(user?.isUsingBiometric) {
+        mutableStateOf(user?.isUsingBiometric ?: false)
+    }
 
     Column(
         modifier = Modifier
@@ -171,19 +177,23 @@ fun ProfileScreen(
                 iconColor = PokeYellow,
                 trailing = {
                     Switch(
-                        checked = user?.isUsingBiometric ?: false,
+                        checked = isBiometricEnabled,
                         onCheckedChange = { isChecked ->
                             if (isChecked) {
-                                BiometricUtil.showBiometricPrompt(activity) {
-                                    user?.let {
-                                        authViewModel.updateBiometric(
-                                            userId = it.userId,
-                                            isUsingBiometric = true,
-                                            biometricKey = UUID.randomUUID().toString()
-                                        )
+                                if (activity != null) {
+                                    BiometricUtil.showBiometricPrompt(activity) {
+                                        isBiometricEnabled = true
+                                        user?.let {
+                                            authViewModel.updateBiometric(
+                                                userId = it.userId,
+                                                isUsingBiometric = true,
+                                                biometricKey = java.util.UUID.randomUUID().toString()
+                                            )
+                                        }
                                     }
                                 }
                             } else {
+                                isBiometricEnabled = false
                                 user?.let {
                                     authViewModel.updateBiometric(
                                         userId = it.userId,
